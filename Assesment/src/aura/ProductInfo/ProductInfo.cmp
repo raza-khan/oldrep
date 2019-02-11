@@ -1,0 +1,71 @@
+<aura:component controller="ProductInfoController" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId" access="global" >
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="caseInfo" type="Case" description="record for case to display additional info" />
+    <aura:attribute name="productInfo" type="List" description="product information for case contact" />
+    <aura:attribute name="showLoader" type="Boolean" default="true" description="Boolean variable to show loader." />
+    
+    <aura:if isTrue="{!v.showLoader}">
+        <div class="slds-is-relative">
+	        <lightning:spinner variant="brand" alternativeText="Loading" size="medium" />
+        </div>
+    </aura:if> <!-- @END:spinner -->
+    
+    <lightning:card>
+        <aura:set attribute="title">
+            <lightning:icon iconName="custom:custom13" size="small"/>
+            <span class="card-title">{!v.caseInfo.Contact.Name}</span>
+        </aura:set>
+        
+        <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+            <thead>
+                <tr class="slds-line-height_reset">
+                    <th scope="col"><div class="slds-truncate" title="Service Name">Service Name</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Product Name">Product Name</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Country">Country</div></th>
+                    <th scope="col"><div class="slds-truncate" title="Cost">Cost</div></th>
+                </tr>
+            </thead>
+            
+            <tbody>
+                <aura:iteration items="{!v.productInfo}" var="product">
+                    <tr class="slds-hint-parent">
+                        <td data-label="{!product.Service__r.Name}" scope="row">
+                            <div class="slds-truncate" title="{!product.Service__r.Name}">
+                                {!product.Service__r.Name}
+                            </div>
+                        </td>
+                        <td data-label="{!product.Product__r.Name}" scope="row">
+                            <div class="slds-truncate" title="{!product.Product__r.Name}">
+                                {!product.Product__r.Name}
+                            </div>
+                        </td>
+                        <td data-label="{!product.Country__c}" scope="row">
+                            <div class="slds-truncate" title="{!product.Country__c}">
+                                {!product.Country__c}
+                            </div>
+                        </td>
+                        <td data-label="{!product.Cost__c}" scope="row">
+                            <div class="slds-truncate" title="{!product.Cost__c}">
+                                <aura:if isTrue="{!not(empty(product.Cost__c))}">
+                                     {!product.Cost__c} 
+                                    <aura:set attribute="else">
+                                        {!product.Percentage_Cost__c} %
+                                    </aura:set>
+                                </aura:if>
+                               
+                            </div>
+                        </td>
+                    </tr>
+                </aura:iteration>
+                
+                <aura:if isTrue="{!v.productInfo.length == 0}">
+                	<tr>
+                        <td colspan="4" align="center">No Products Found.</td>
+                    </tr>
+                </aura:if>
+            </tbody>
+        </table>
+    </lightning:card>
+    
+</aura:component>
